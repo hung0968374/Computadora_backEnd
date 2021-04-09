@@ -1,0 +1,17 @@
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+    "username": "concacto",
+    "password": "henry"
+}
+
+###
+POST http://localhost:5000/api/posts
+Content-Type: application/json
+{
+    "description": "oussy",
+   "url": "facebook.com",
+   "status": "learning",
+   "title": "happy"
+}
