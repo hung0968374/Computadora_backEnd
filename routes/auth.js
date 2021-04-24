@@ -1,49 +1,92 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
-const argon2 = require("argon2");
+const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-// @route Post api/auth/register
-// @access public
+const nodemailer = require("nodemailer");
 
 router.get("/", (req, res) => res.send("User route"));
-router.post("/register", async (req, res) => {
-  const { username, password } = req.body;
-  // validate user existence
+router.post("/register/verifyAccount", async (req, res) => {
+  function validateEmail(email) {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+  }
+
+  const { username, password, email } = req.body;
+  const isValidEmail = validateEmail(email);
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+  /////validate user input
   if (!username || !password) {
     return res
       .status(400)
       .json({ success: false, message: "missing username or password" });
+  } else if (!isValidEmail) {
+    return res
+      .status(400)
+      .json({ success: false, message: "email is not valid" });
   }
+
+  // validate user existence
   try {
     // check for existing user
-    const user = await User.findOne({ username });
-    if (user) {
+    const usernameExisted = await User.findOne({ username });
+    // check whether email existed or not
+    const userEmailExisted = await User.findOne({ email });
+    if (userEmailExisted || usernameExisted) {
       return res.status(400).json({
         success: false,
-        message: "username existed, choose another one",
+        message: "email and, or username already existed, choose another one",
       });
     }
-    const hashedPassword = await argon2.hash(password);
-    const newUser = new User({ username, password: hashedPassword });
-    await newUser.save();
-    /// return token
     const accessToken = jwt.sign(
-      { userId: newUser._id },
+      { username, hashedPassword, email },
       process.env.ACCESS_TOKEN_SECRET
     );
-    res.json({
-      success: true,
-      message: "userCreated successfully",
-      accessToken,
+    var transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USERNAME,
+        pass: process.env.EMAIL_PASSWORD,
+      },
     });
+    var mailOptions = {
+      from: "ecommerceApp@gmail.com",
+      to: email,
+      subject: "Please click to the following link to activate your account",
+      html: `<a href="http://localhost:3000/activateAccount/${accessToken}">CLICK TO ACTIVATE YOUR ACCOUNT</a>`,
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        res.json({
+          message:
+            "Email sent, please check your email to activate your account",
+          accessToken,
+        });
+      }
+    });
+
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "server error" });
   }
 });
-// @route Post api/auth/login
-// @access public
+
+router.post("/register/activateAccount", async (req, res) => {
+  const { token } = req.body;
+  const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  const newUser = new User({
+    username: decodedToken.username,
+    email: decodedToken.email,
+    password: decodedToken.hashedPassword,
+  });
+  await newUser.save();
+  res.json({ user: newUser });
+});
+
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
   // validate user existence
@@ -59,7 +102,7 @@ router.post("/login", async (req, res) => {
         .status(400)
         .json({ success: false, message: "username doesnt exist" });
     }
-    const passwordValid = await argon2.verify(user.password, password);
+    const passwordValid = await bcrypt.compare(password, user.password);
     if (!passwordValid) {
       return res
         .status(400)
