@@ -7,7 +7,19 @@ const Post = require("../models/Post");
 // @desciption Create post
 // @access Private
 router.post("/", verifyToken, async (req, res) => {
-  const { title, description, url, status } = req.body;
+  const {
+    imgs,
+    title,
+    processor,
+    screen,
+    ram,
+    graphicCard,
+    pin,
+    weight,
+    operatingSystem,
+    price,
+    review,
+  } = req.body;
   if (!title) {
     return res
       .status(400)
@@ -15,31 +27,49 @@ router.post("/", verifyToken, async (req, res) => {
   }
   try {
     const newPost = new Post({
+      imgs,
       title,
-      description,
-      url: url.startsWith("https://") ? url : `https://${url}`,
-      status: status || "to learn",
-      user: req.userId,
+      processor,
+      screen,
+      ram,
+      graphicCard,
+      pin,
+      weight,
+      operatingSystem,
+      price,
+      review,
     });
     await newPost.save();
-    res.json({ success: true, message: "happy", post: newPost });
+    res.json({ success: true, post: newPost });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "server error" });
   }
 });
 //// get api/posts
-router.get("/", verifyToken, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    const posts = await Post.find({ user: req.userId }).populate("user", [
-      "username",
-    ]);
+    const posts = await Post.find({});
     res.json({ success: true, posts });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "server error" });
   }
 });
+////pagination
+router.get("/page=:page/amountPerPage=:limit", async (req, res) => {
+  const { page, limit } = req.params;
+  try {
+    const posts = await Post.find()
+      .limit(limit * 1)
+      .skip((page - 1) * limit);
+    res.json({ success: true, page, limit, posts });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "server error" });
+  }
+});
+
 router.put("/:id", verifyToken, async (req, res) => {
   const { title, description, url, status } = req.body;
   if (!title) {

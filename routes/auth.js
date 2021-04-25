@@ -68,7 +68,6 @@ router.post("/register/verifyAccount", async (req, res) => {
         });
       }
     });
-
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "server error" });
@@ -76,15 +75,28 @@ router.post("/register/verifyAccount", async (req, res) => {
 });
 
 router.post("/register/activateAccount", async (req, res) => {
-  const { token } = req.body;
-  const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-  const newUser = new User({
-    username: decodedToken.username,
-    email: decodedToken.email,
-    password: decodedToken.hashedPassword,
-  });
-  await newUser.save();
-  res.json({ user: newUser });
+  try {
+    const token = req.body.token;
+    const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    const username = decodedToken.username;
+    const email = decodedToken.email;
+    /////recheck
+    const usernameExisted = await User.findOne({ username });
+    const userEmailExisted = await User.findOne({ email });
+    if (!usernameExisted && !userEmailExisted) {
+      const newUser = new User({
+        username: decodedToken.username,
+        email: decodedToken.email,
+        password: decodedToken.hashedPassword,
+      });
+      await newUser.save();
+      res.json({ user: newUser });
+    } else {
+      res.status(400).json({ message: "username or email already existed" });
+    }
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 router.post("/login", async (req, res) => {
@@ -117,6 +129,7 @@ router.post("/login", async (req, res) => {
       success: true,
       message: "Logged in successfully",
       accessToken,
+      user,
     });
   } catch (error) {
     console.log(error);

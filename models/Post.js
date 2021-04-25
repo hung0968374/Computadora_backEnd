@@ -2,23 +2,49 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const PostSchema = new Schema({
+  imgs: {
+    type: Array,
+  },
   title: {
     type: String,
-    required: true,
+    default: "",
   },
-  description: {
+  processor: {
     type: String,
+    default: "",
   },
-  url: {
+  screen: {
     type: String,
+    default: "",
   },
-  status: {
+  ram: {
     type: String,
-    enum: ["to learn", "learning", "learned"],
+    default: "",
   },
-  user: {
-    type: Schema.Types.ObjectId,
-    ref: "users",
+  graphicCard: {
+    type: String,
+    default: "",
+  },
+  pin: {
+    type: String,
+    default: "",
+  },
+  weight: {
+    type: String,
+    default: "",
+  },
+  operatingSystem: {
+    type: String,
+    default: "Hệ điều hành: Windows 10 bản quyền",
+  },
+  price: {
+    type: String,
+    default: "",
+  },
+
+  review: {
+    type: Array,
+    default: [],
   },
 });
 

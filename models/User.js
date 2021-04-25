@@ -16,10 +16,15 @@ const UserSchema = new Schema({
     required: true,
     unique: true,
   },
+  imageUrl: {
+    type: String,
+    default:
+      "https://res.cloudinary.com/dsykf3mo9/image/upload/v1619363046/ProductImage/icons8-male-user-100_jgukfa.png",
+  },
   createdAt: {
     type: Date,
     default: Date.now,
   },
 });
 
-module.exports = mongoose.model("users", UserSchema);
+module.exports = mongoose.model("userInfo", UserSchema);
