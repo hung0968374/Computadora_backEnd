@@ -1,25 +1,30 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const UserSchema = new Schema({
-  username: {
+const InvoiceSchema = new Schema({
+  userId: {
     type: String,
     required: true,
-    unique: true,
   },
-  password: {
+  invoiceItems: {
+    type: Array,
+    default: [],
+  },
+  customerName: {
+    type: String,
+    required: true,
+  },
+  customerPhone: {
     type: String,
     required: true,
   },
   email: {
     type: String,
     required: true,
-    unique: true,
   },
-  imageUrl: {
+  address: {
     type: String,
-    default:
-      "https://i.pinimg.com/236x/24/21/85/242185eaef43192fc3f9646932fe3b46.jpg",
+    required: true,
   },
   createdAt: {
     type: Date,
@@ -27,4 +32,4 @@ const UserSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model("userInfo", UserSchema);
+module.exports = mongoose.model("invoices", InvoiceSchema);

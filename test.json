@@ -1,0 +1,18 @@
+{
+  "invoiceItems": [
+    {
+      "id": "123",
+      "productName": "laptop1",
+      "quantity": "3",
+      "price": "123d",
+      "imgUrl": "local1"
+    },
+    {
+      "id": "123",
+      "productName": "laptop1",
+      "quantity": "3",
+      "price": "123d",
+      "imgUrl": "local1"
+    }
+  ]
+}

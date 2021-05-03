@@ -7,6 +7,7 @@ const nodemailer = require("nodemailer");
 
 router.get("/", (req, res) => res.send("User route"));
 router.post("/register/verifyAccount", async (req, res) => {
+  console.log(req.body);
   function validateEmail(email) {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
@@ -53,7 +54,7 @@ router.post("/register/verifyAccount", async (req, res) => {
     var mailOptions = {
       from: "ecommerceApp@gmail.com",
       to: email,
-      subject: "Please click to the following link to activate your account",
+      subject: "Click vào link này để kích hoạt tài khoản của bạn",
       html: `<a href="http://localhost:3000/activateAccount/${accessToken}">CLICK TO ACTIVATE YOUR ACCOUNT</a>`,
     };
 
@@ -63,7 +64,7 @@ router.post("/register/verifyAccount", async (req, res) => {
       } else {
         res.json({
           message:
-            "Email sent, please check your email to activate your account",
+            "Chúng tôi đã gửi đường link xác thực vào gmail của bạn (check mục thư rác), hãy bấm vào đường link đó để kích hoạt tài khoản bạn đã đăng kí.",
           accessToken,
         });
       }
@@ -136,4 +137,5 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ success: false, message: "server error" });
   }
 });
+
 module.exports = router;

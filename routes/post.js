@@ -56,6 +56,16 @@ router.get("/", async (req, res) => {
     res.status(500).json({ success: false, message: "server error" });
   }
 });
+router.get("/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const post = await Post.find({ _id: id });
+    res.json(post);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "server error" });
+  }
+});
 ////pagination
 router.get("/page=:page/amountPerPage=:limit", async (req, res) => {
   const { page, limit } = req.params;
@@ -63,7 +73,7 @@ router.get("/page=:page/amountPerPage=:limit", async (req, res) => {
     const posts = await Post.find()
       .limit(limit * 1)
       .skip((page - 1) * limit);
-    res.json({ success: true, page, limit, posts });
+    res.json(posts);
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "server error" });
@@ -123,4 +133,10 @@ router.delete("/:id", verifyToken, async (req, res) => {
     res.status(500).json({ success: false, message: "server error" });
   }
 });
+///////test user token
+router.get("/testToken/testToken", verifyToken, async (req, res) => {
+  const userId = req.userId;
+  res.json({ userId });
+});
+
 module.exports = router;

@@ -1,11 +1,12 @@
 require("dotenv").config();
 const express = require("express");
-
 const mongoose = require("mongoose");
+const Pusher = require("pusher");
 var cors = require("cors");
 const authRouter = require("./routes/auth");
 const postRouter = require("./routes/post");
-
+const invoiceRouter = require("./routes/invoice");
+const chatRouter = require("./routes/chat");
 const connectDB = async () => {
   try {
     await mongoose.connect(
@@ -24,13 +25,42 @@ const connectDB = async () => {
   }
 };
 connectDB();
+const pusher = new Pusher({
+  appId: "1188112",
+  key: "0489280acfa7987721e1",
+  secret: "262b01181ab057d4f796",
+  cluster: "ap1",
+  useTLS: true,
+});
+
+const db = mongoose.connection;
+db.once("open", () => {
+  console.log("chat collection connected");
+  const msgCollection = db.collection("chats");
+  const changeStream = msgCollection.watch();
+  changeStream.on("change", (change) => {
+    console.log("databased changed", change);
+
+    if (change.operationType === "insert") {
+      const messageDetails = change.fullDocument;
+      pusher.trigger("messages", "inserted", {
+        name: messageDetails.name,
+        message: messageDetails.message,
+      });
+    } else {
+      console.log("error triggering pusher");
+    }
+  });
+});
+
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", authRouter);
 app.use("/api/posts", postRouter);
-
+app.use("/api/invoices", invoiceRouter);
+app.use("/api/chat", chatRouter);
 const PORT = 5000;
 
 app.listen(PORT, () => console.log(`server started on port ${PORT}`));
