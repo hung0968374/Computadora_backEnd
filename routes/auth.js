@@ -7,7 +7,6 @@ const nodemailer = require("nodemailer");
 
 router.get("/", (req, res) => res.send("User route"));
 router.post("/register/verifyAccount", async (req, res) => {
-  console.log(req.body);
   function validateEmail(email) {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
@@ -124,7 +123,8 @@ router.post("/login", async (req, res) => {
     /// user validated -> return token
     const accessToken = jwt.sign(
       { userId: user._id },
-      process.env.ACCESS_TOKEN_SECRET
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "10000h" }
     );
     res.json({
       success: true,

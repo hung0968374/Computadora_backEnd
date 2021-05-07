@@ -4,8 +4,8 @@ const verifyToken = (req, res, next) => {
   const facebookUserId = req.header("facebookUserId");
   const authHeader = req.header("Authorization");
   // console.log(authHeader);
-  console.log(facebookUserId);
   const token = authHeader && authHeader.split(" ")[1];
+  console.log(token);
   if (facebookUserId) {
     const facebookGraphUrl = `https://graph.facebook.com/${facebookUserId}/?fields=id,name,email,picture&access_token=${token}`;
     fetch(facebookGraphUrl, {
@@ -25,7 +25,6 @@ const verifyToken = (req, res, next) => {
     } else if (token && isCustomAuth) {
       try {
         const decodedData = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-        console.log(decodedData);
         req.userId = decodedData.userId;
         next();
       } catch (error) {
