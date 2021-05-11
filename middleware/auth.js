@@ -5,7 +5,7 @@ const verifyToken = (req, res, next) => {
   const authHeader = req.header("Authorization");
   // console.log(authHeader);
   const token = authHeader && authHeader.split(" ")[1];
-  console.log(token);
+  // console.log(token);
   if (facebookUserId) {
     const facebookGraphUrl = `https://graph.facebook.com/${facebookUserId}/?fields=id,name,email,picture&access_token=${token}`;
     fetch(facebookGraphUrl, {
@@ -20,8 +20,8 @@ const verifyToken = (req, res, next) => {
     const isCustomAuth = token?.length < 500;
     if (!token) {
       return res
-        .status(401)
-        .json({ success: false, message: "access token not found" });
+        .status(403)
+        .json({ success: false, message: "Yêu cầu không hợp lệ" });
     } else if (token && isCustomAuth) {
       try {
         const decodedData = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
@@ -31,7 +31,7 @@ const verifyToken = (req, res, next) => {
         console.log(error);
         return res
           .status(403)
-          .json({ success: false, message: "invalid token" });
+          .json({ success: false, message: "Yêu cầu không hợp lệ" });
       }
     } else if (token && !isCustomAuth) {
       const decodedData = jwt.decode(token);

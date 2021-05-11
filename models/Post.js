@@ -46,6 +46,10 @@ const PostSchema = new Schema({
     type: Array,
     default: [],
   },
+  genre: {
+    type: String,
+    require: true,
+  },
 });
 
 module.exports = mongoose.model("posts", PostSchema);

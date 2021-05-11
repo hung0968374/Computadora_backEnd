@@ -19,11 +19,15 @@ const UserSchema = new Schema({
   imageUrl: {
     type: String,
     default:
-      "https://i.pinimg.com/236x/24/21/85/242185eaef43192fc3f9646932fe3b46.jpg",
+      "https://banner2.cleanpng.com/20180822/gwx/kisspng-security-hacker-hoodie-portable-network-graphics-i-5b7da10401b369.199557191534959876007.jpg",
   },
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  name: {
+    type: String,
+    default: "",
   },
 });
 

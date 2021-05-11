@@ -20,11 +20,11 @@ router.post("/register/verifyAccount", async (req, res) => {
   if (!username || !password) {
     return res
       .status(400)
-      .json({ success: false, message: "missing username or password" });
+      .json({ success: false, message: "Thiếu tên đăng nhập hoặc mật khẩu" });
   } else if (!isValidEmail) {
     return res
       .status(400)
-      .json({ success: false, message: "email is not valid" });
+      .json({ success: false, message: "Email không hợp lệ" });
   }
 
   // validate user existence
@@ -36,7 +36,7 @@ router.post("/register/verifyAccount", async (req, res) => {
     if (userEmailExisted || usernameExisted) {
       return res.status(400).json({
         success: false,
-        message: "email and, or username already existed, choose another one",
+        message: "Email và (hoặc) tên đăng nhập đã tồn tại",
       });
     }
     const accessToken = jwt.sign(
@@ -54,7 +54,7 @@ router.post("/register/verifyAccount", async (req, res) => {
       from: "ecommerceApp@gmail.com",
       to: email,
       subject: "Click vào link này để kích hoạt tài khoản của bạn",
-      html: `<a href="http://localhost:3000/activateAccount/${accessToken}">CLICK TO ACTIVATE YOUR ACCOUNT</a>`,
+      html: `<a href="https://localhost:3000/activateAccount/${accessToken}">CLICK TO ACTIVATE YOUR ACCOUNT</a>`,
     };
 
     transporter.sendMail(mailOptions, function (error, info) {
@@ -88,11 +88,12 @@ router.post("/register/activateAccount", async (req, res) => {
         username: decodedToken.username,
         email: decodedToken.email,
         password: decodedToken.hashedPassword,
+        name: decodedToken.username,
       });
       await newUser.save();
       res.json({ user: newUser });
     } else {
-      res.status(400).json({ message: "username or email already existed" });
+      res.status(400).json({ message: "Email hoặc tên đăng nhập đã tồn tại" });
     }
   } catch (error) {
     console.log(error);
@@ -105,20 +106,20 @@ router.post("/login", async (req, res) => {
   if (!username || !password) {
     return res
       .status(400)
-      .json({ success: false, message: "missing username or password" });
+      .json({ success: false, message: "Thiếu tên đăng nhập hoặc mật khẩu" });
   }
   try {
     const user = await User.findOne({ username });
     if (!user) {
       return res
         .status(400)
-        .json({ success: false, message: "username doesnt exist" });
+        .json({ success: false, message: "Tên đăng nhập không tồn tại" });
     }
     const passwordValid = await bcrypt.compare(password, user.password);
     if (!passwordValid) {
       return res
         .status(400)
-        .json({ success: false, message: "password is incorrect" });
+        .json({ success: false, message: "Mật khẩu không đúng" });
     }
     /// user validated -> return token
     const accessToken = jwt.sign(
@@ -128,7 +129,7 @@ router.post("/login", async (req, res) => {
     );
     res.json({
       success: true,
-      message: "Logged in successfully",
+      message: "Đăng nhập thành công",
       accessToken,
       user,
     });

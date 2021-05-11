@@ -26,7 +26,7 @@ router.post("/", verifyToken, async (req, res) => {
   if (!title) {
     return res
       .status(400)
-      .json({ success: false, message: "title is required" });
+      .json({ success: false, message: "Tên sản phẩm không được thiếu" });
   }
   try {
     const newPost = new Post({
@@ -54,6 +54,18 @@ router.get("/", async (req, res) => {
   try {
     const posts = await Post.find({});
     res.json({ success: true, posts });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "server error" });
+  }
+});
+router.get("/search/searchItemsPool", async (req, res) => {
+  try {
+    const searchResultsPool = await Post.find(
+      {},
+      { title: 1, imgs: 1, price: 1, genre: 1 }
+    );
+    res.json({ success: true, searchResultsPool });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "server error" });
@@ -137,9 +149,5 @@ router.get("/page=:page/amountPerPage=:limit", async (req, res) => {
 //   }
 // });
 ///////test user token
-router.get("/testToken/testToken", verifyToken, async (req, res) => {
-  const userId = req.userId;
-  res.json({ userId });
-});
 
 module.exports = router;

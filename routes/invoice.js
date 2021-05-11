@@ -16,7 +16,7 @@ router.get("/", verifyToken, async (req, res) => {
 router.get("/getInvoiceByParticularUser", verifyToken, async (req, res) => {
   const userId = req.userId;
   if (!userId) {
-    return res.status(403).json({ message: "yêu cầu không hợp lệ" });
+    return res.status(403).json({ message: "Yêu cầu không hợp lệ" });
   }
   try {
     const invoices = await Invoice.find({ userId }).sort({ createdAt: -1 });
@@ -34,9 +34,9 @@ router.post("/", verifyToken, async (req, res) => {
   const { customerName, customerPhone, email, address } = form;
   const billCharge = req.body.billCharge;
   if (!userId) {
-    return res.status(403).json({ message: "yêu cầu không hợp lệ" });
+    return res.status(403).json({ message: "Yêu cầu không hợp lệ" });
   } else if (invoiceItems.length === 0) {
-    return res.status(400).json({ message: "yêu cầu không hợp lệ" });
+    return res.status(400).json({ message: "Yêu cầu không hợp lệ" });
   }
   try {
     const newInvoice = new Invoice({
