@@ -60,4 +60,35 @@ router.get("/filter", async (req, res) => {
     res.status(500).json({ message: "server error" });
   }
 });
+
+router.delete("/:id", verifyToken, async (req, res) => {
+  const userId = req.userId;
+  const commentNeedDeleting = req.body;
+  if (!userId) {
+    res.status(403).json({ success: false, message: "Yêu cầu không hợp lệ" });
+  }
+  // console.log("cmt", commentNeedDeleting);
+  // console.log("userid", userId);
+  if (
+    userId === commentNeedDeleting.user.facebookUserId ||
+    userId === commentNeedDeleting.user.googleId ||
+    userId === commentNeedDeleting.user._id ||
+    userId === commentNeedDeleting.user.id
+  ) {
+    try {
+      const deleteComment = await Comment.findOneAndDelete({
+        _id: commentNeedDeleting._id,
+      });
+      if (!deleteComment) {
+        res.status(401).json({ message: "Yêu cầu không hợp lệ" });
+      }
+      res.json({ success: true, comment: deleteComment });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "server error" });
+    }
+  } else {
+    res.status(401).json({ message: "not authorized" });
+  }
+});
 module.exports = router;

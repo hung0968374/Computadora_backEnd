@@ -19,7 +19,7 @@ const UserSchema = new Schema({
   imageUrl: {
     type: String,
     default:
-      "https://banner2.cleanpng.com/20180822/gwx/kisspng-security-hacker-hoodie-portable-network-graphics-i-5b7da10401b369.199557191534959876007.jpg",
+      "https://img.freepik.com/free-vector/hacker-background_23-2147900868.jpg",
   },
   createdAt: {
     type: Date,

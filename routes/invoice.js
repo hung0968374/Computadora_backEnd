@@ -27,7 +27,7 @@ router.get("/getInvoiceByParticularUser", verifyToken, async (req, res) => {
   }
 });
 router.post("/", verifyToken, async (req, res) => {
-  console.log(req.userId);
+  // console.log(req.userId);
   const form = req.body.form;
   const userId = req.userId;
   const { invoiceItems } = req.body;

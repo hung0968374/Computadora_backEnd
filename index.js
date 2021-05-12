@@ -27,10 +27,10 @@ const connectDB = async () => {
 };
 connectDB();
 const pusher = new Pusher({
-  appId: "1188112",
-  key: "0489280acfa7987721e1",
-  secret: "262b01181ab057d4f796",
-  cluster: "ap1",
+  appId: process.env.PUSHER_APP_ID,
+  key: process.env.PUSHER_KEY,
+  secret: process.env.PUSHER_SECRET,
+  cluster: process.env.PUSHER_CLUSTER,
   useTLS: true,
 });
 
@@ -49,6 +49,17 @@ db.once("open", () => {
         comment: messageDetails.commentContent,
         sentCommentTime: messageDetails.createdAt,
         postId: messageDetails.postId,
+        commentId: messageDetails._id,
+        userIdSentComment:
+          messageDetails.user.googleId ||
+          messageDetails.user._id ||
+          messageDetails.user.facebookUserId,
+      });
+    } else if (change.operationType === "delete") {
+      const idCommentDeleted = change.documentKey._id;
+      // console.log("cmt id deleted", idCommentDeleted);
+      pusher.trigger("comment", "deleted", {
+        idCommentDeleted,
       });
     } else {
       console.log("error triggering pusher");
