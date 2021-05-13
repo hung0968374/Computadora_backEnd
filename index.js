@@ -8,6 +8,9 @@ const postRouter = require("./routes/post");
 const invoiceRouter = require("./routes/invoice");
 const chatRouter = require("./routes/chat");
 const commentRouter = require("./routes/comment");
+const userRouter = require("./routes/user");
+var bodyParser = require("body-parser");
+
 const connectDB = async () => {
   try {
     await mongoose.connect(
@@ -69,13 +72,15 @@ db.once("open", () => {
 
 const app = express();
 app.use(cors());
-app.use(express.json());
-
+// app.use(express.json());
+app.use(bodyParser.json({ limit: "10mb" }));
+app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 app.use("/api/auth", authRouter);
 app.use("/api/posts", postRouter);
 app.use("/api/invoices", invoiceRouter);
 app.use("/api/chat", chatRouter);
 app.use("/api/comment", commentRouter);
+app.use("/api/user", userRouter);
 const PORT = 5000;
 
 app.listen(PORT, () => console.log(`server started on port ${PORT}`));
