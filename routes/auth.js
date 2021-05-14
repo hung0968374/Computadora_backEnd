@@ -27,7 +27,11 @@ router.post("/register/verifyAccount", async (req, res) => {
       .status(400)
       .json({ success: false, message: "Email không hợp lệ" });
   }
-
+  if (username.length > 50 || password.length > 50) {
+    return res
+      .status(400)
+      .json({ message: "Tên hoặc mật khẩu tối đa giới hạn ở 50 kí tự" });
+  }
   // validate user existence
   try {
     // check for existing user
@@ -64,7 +68,7 @@ router.post("/register/verifyAccount", async (req, res) => {
       } else {
         res.json({
           message:
-            "Chúng tôi đã gửi đường link xác thực vào gmail của bạn (check mục thư rác), hãy bấm vào đường link đó để kích hoạt tài khoản bạn đã đăng kí.",
+            "Chúng tôi đã gửi đường link xác thực đăng kí tài khoản vào gmail của bạn (check mục thư rác), hãy bấm vào đường link đó để kích hoạt tài khoản bạn đã đăng kí.",
           accessToken,
         });
       }
@@ -98,17 +102,24 @@ router.post("/register/activateAccount", async (req, res) => {
     }
   } catch (error) {
     console.log(error);
+    res.status(500).json({ success: false, message: "server error" });
   }
 });
 
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
   // validate user existence
+  if (username.length > 50 || password.length > 50) {
+    return res
+      .status(400)
+      .json({ message: "Tên hoặc mật khẩu tối đa giới hạn ở 50 kí tự" });
+  }
   if (!username || !password) {
     return res
       .status(400)
       .json({ success: false, message: "Thiếu tên đăng nhập hoặc mật khẩu" });
   }
+
   try {
     const user = await User.findOne({ username });
     if (!user) {
