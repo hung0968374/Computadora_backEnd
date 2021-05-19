@@ -87,6 +87,6 @@ app.use("/api/invoices", invoiceRouter);
 app.use("/api/chat", chatRouter);
 app.use("/api/comment", commentRouter);
 app.use("/api/user", userRouter);
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => console.log(`server started on port ${PORT}`));
