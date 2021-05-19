@@ -33,6 +33,11 @@ router.post("/", verifyToken, async (req, res) => {
   const { invoiceItems } = req.body;
   const { customerName, customerPhone, email, address } = form;
   const billCharge = req.body.billCharge;
+  if (!customerName || !customerPhone || !email || !address) {
+    return res
+      .status(400)
+      .json({ message: "Phiền bạn nhập đủ tất cả các trường thông tin." });
+  }
   if (!userId) {
     return res.status(403).json({ message: "Yêu cầu không hợp lệ" });
   } else if (invoiceItems.length === 0) {

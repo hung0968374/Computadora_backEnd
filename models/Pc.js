@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const PostSchema = new Schema({
+const PcSchema = new Schema({
   imgs: {
     type: Array,
   },
@@ -13,24 +13,11 @@ const PostSchema = new Schema({
     type: String,
     default: "",
   },
-
-  screen: {
-    type: String,
-    default: "",
-  },
   ram: {
     type: String,
     default: "",
   },
   graphicCard: {
-    type: String,
-    default: "",
-  },
-  pin: {
-    type: String,
-    default: "",
-  },
-  weight: {
     type: String,
     default: "",
   },
@@ -42,7 +29,10 @@ const PostSchema = new Schema({
     type: String,
     default: "",
   },
-
+  ssd: {
+    type: String,
+    default: "",
+  },
   review: {
     type: Array,
     default: [],
@@ -51,6 +41,10 @@ const PostSchema = new Schema({
     type: String,
     require: true,
   },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
-module.exports = mongoose.model("posts", PostSchema);
+module.exports = mongoose.model("Pc", PcSchema);

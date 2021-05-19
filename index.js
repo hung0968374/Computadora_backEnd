@@ -9,6 +9,7 @@ const invoiceRouter = require("./routes/invoice");
 const chatRouter = require("./routes/chat");
 const commentRouter = require("./routes/comment");
 const userRouter = require("./routes/user");
+const pcRouter = require("./routes/Pc");
 var bodyParser = require("body-parser");
 
 const connectDB = async () => {
@@ -77,6 +78,7 @@ app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 app.use("/api/auth", authRouter);
 app.use("/api/posts", postRouter);
+app.use("/api/pcs", pcRouter);
 app.use("/api/invoices", invoiceRouter);
 app.use("/api/chat", chatRouter);
 app.use("/api/comment", commentRouter);

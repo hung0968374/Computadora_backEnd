@@ -2,6 +2,7 @@ const express = require("express");
 const verifyToken = require("../middleware/auth");
 const router = express.Router();
 const User = require("../models/User");
+const History = require("../models/History");
 const { cloudinary } = require("../utils/cloudary");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
@@ -134,19 +135,32 @@ router.post("/recoverPw", async (req, res) => {
 router.post("/activateRecoveringPw", async (req, res) => {
   const token = req.body.token;
   try {
-    const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-    const userEmail = decodedToken.userEmail;
-    const userNewPw = decodedToken.hashedNewPassword;
-    const userWithGivenEmail = await User.findOne({ email: userEmail });
-    const updatedUser = userWithGivenEmail;
-    // console.log(updatedUser);
-    updatedUser.password = userNewPw;
-    const currentUserInfo = await User.findOneAndUpdate(
-      { email: userEmail },
-      updatedUser,
-      { new: true }
-    );
-    res.json({ success: true, currentUserInfo });
+    const tokenAlreadyExist = await History.findOne({ token });
+    // console.log("token existed", tokenAlreadyExist);
+    if (tokenAlreadyExist) {
+      return res
+        .status(400)
+        .json({ message: "Token lấy lại tài khoản này đã được sử dụng" });
+    } else {
+      const newHistoryElement = new History({
+        token: token,
+      });
+      await newHistoryElement.save();
+      const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+      const userEmail = decodedToken.userEmail;
+      const userNewPw = decodedToken.hashedNewPassword;
+      const userWithGivenEmail = await User.findOne({ email: userEmail });
+      const updatedUser = userWithGivenEmail;
+      // console.log(updatedUser);
+      updatedUser.password = userNewPw;
+      const currentUserInfo = await User.findOneAndUpdate(
+        { email: userEmail },
+        updatedUser,
+        { new: true }
+      );
+
+      res.json({ success: true, currentUserInfo });
+    }
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "server error" });

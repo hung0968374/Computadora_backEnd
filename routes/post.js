@@ -1,15 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const verifyToken = require("../middleware/auth");
-const { update } = require("../models/Post");
 const Post = require("../models/Post");
-const User = require("../models/User");
 // @route POST api/posts
 // @desciption Create post
 // @access Private
-router.post("/", verifyToken, async (req, res) => {
+router.post("/darkKnight", verifyToken, async (req, res) => {
   const userId = req.userId;
-
   const {
     imgs,
     title,
@@ -74,7 +71,7 @@ router.get("/search/searchItemsPool", async (req, res) => {
 router.get("/:id", async (req, res) => {
   const id = req.params.id;
   try {
-    const post = await Post.find({ _id: id });
+    const post = await Post.findOne({ _id: id });
     res.json(post);
   } catch (error) {
     console.log(error);
@@ -85,13 +82,26 @@ router.get("/:id", async (req, res) => {
 router.get("/page=:page/amountPerPage=:limit", async (req, res) => {
   const { page, limit } = req.params;
   try {
-    const posts = await Post.find()
+    const posts = await Post.find({ genre: "Laptop" })
       .limit(limit * 1)
       .skip((page - 1) * limit);
     res.json(posts);
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "server error" });
+  }
+});
+router.get("/genre=laptop/filter", async (req, res) => {
+  const page = req.query.page;
+  const limit = req.query.amountPerPage;
+  try {
+    const posts = await Post.find({ genre: "Laptop" })
+      .limit(limit * 1)
+      .skip((page - 1) * limit);
+    res.json(posts);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ success: false, message: "server error" });
   }
 });
 
