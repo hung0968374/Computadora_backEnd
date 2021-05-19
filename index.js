@@ -76,6 +76,10 @@ app.use(cors());
 // app.use(express.json());
 app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
+
+app.get("/", (req, res) => {
+  res.send("Welcome to computadora-api");
+});
 app.use("/api/auth", authRouter);
 app.use("/api/posts", postRouter);
 app.use("/api/pcs", pcRouter);
