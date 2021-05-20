@@ -2,50 +2,51 @@ const express = require("express");
 const router = express.Router();
 const verifyToken = require("../middleware/auth");
 const Post = require("../models/Post");
-// @route POST api/posts
-// @desciption Create post
-// @access Private
-router.post("/darkKnight", verifyToken, async (req, res) => {
-  const userId = req.userId;
-  const {
-    imgs,
-    title,
-    processor,
-    screen,
-    ram,
-    graphicCard,
-    pin,
-    weight,
-    operatingSystem,
-    price,
-    review,
-  } = req.body;
-  if (!title) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Tên sản phẩm không được thiếu" });
-  }
-  try {
-    const newPost = new Post({
-      imgs,
-      title,
-      processor,
-      screen,
-      ram,
-      graphicCard,
-      pin,
-      weight,
-      operatingSystem,
-      price,
-      review,
-    });
-    await newPost.save();
-    res.json({ success: true, post: newPost });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ success: false, message: "server error" });
-  }
-});
+
+// disable post function
+
+// router.post("/darkKnight", verifyToken, async (req, res) => {
+//   const userId = req.userId;
+//   const {
+//     imgs,
+//     title,
+//     processor,
+//     screen,
+//     ram,
+//     graphicCard,
+//     pin,
+//     weight,
+//     operatingSystem,
+//     price,
+//     review,
+//   } = req.body;
+//   if (!title) {
+//     return res
+//       .status(400)
+//       .json({ success: false, message: "Tên sản phẩm không được thiếu" });
+//   }
+//   try {
+//     const newPost = new Post({
+//       imgs,
+//       title,
+//       processor,
+//       screen,
+//       ram,
+//       graphicCard,
+//       pin,
+//       weight,
+//       operatingSystem,
+//       price,
+//       review,
+//     });
+//     await newPost.save();
+//     res.json({ success: true, post: newPost });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({ success: false, message: "server error" });
+//   }
+// });
+
 //// get api/posts
 router.get("/", async (req, res) => {
   try {
@@ -104,6 +105,8 @@ router.get("/genre=laptop/filter", async (req, res) => {
     return res.status(500).json({ success: false, message: "server error" });
   }
 });
+
+//////////////////         example
 
 // router.put("/:id", verifyToken, async (req, res) => {
 //   const { title, description, url, status } = req.body;

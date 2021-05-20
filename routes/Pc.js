@@ -1,56 +1,56 @@
 const express = require("express");
 const router = express.Router();
 const Pc = require("../models/Pc");
-// @route POST api/pcs
-// @desciption Create post
-// @access Private
-router.post("/darkKnight", async (req, res) => {
-  console.log(req.body);
-  const {
-    imgs,
-    title,
-    processor,
-    ram,
-    graphicCard,
-    operatingSystem,
-    price,
-    ssd,
-    review,
-    genre,
-  } = req.body;
-  if (
-    !imgs ||
-    !title ||
-    !processor ||
-    !ram ||
-    !graphicCard ||
-    !operatingSystem ||
-    !price ||
-    !ssd ||
-    !review
-  ) {
-    return res.status(400).json({ message: "failed" });
-  }
-  try {
-    const newPc = new Pc({
-      imgs,
-      title,
-      processor,
-      ram,
-      graphicCard,
-      operatingSystem,
-      price,
-      review,
-      ssd,
-      genre,
-    });
-    await newPc.save();
-    res.json({ success: true, pc: newPc });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ success: false, message: "server error" });
-  }
-});
+
+// disable post function
+
+// router.post("/darkKnight", async (req, res) => {
+//   console.log(req.body);
+//   const {
+//     imgs,
+//     title,
+//     processor,
+//     ram,
+//     graphicCard,
+//     operatingSystem,
+//     price,
+//     ssd,
+//     review,
+//     genre,
+//   } = req.body;
+//   if (
+//     !imgs ||
+//     !title ||
+//     !processor ||
+//     !ram ||
+//     !graphicCard ||
+//     !operatingSystem ||
+//     !price ||
+//     !ssd ||
+//     !review
+//   ) {
+//     return res.status(400).json({ message: "failed" });
+//   }
+//   try {
+//     const newPc = new Pc({
+//       imgs,
+//       title,
+//       processor,
+//       ram,
+//       graphicCard,
+//       operatingSystem,
+//       price,
+//       review,
+//       ssd,
+//       genre,
+//     });
+//     await newPc.save();
+//     res.json({ success: true, pc: newPc });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({ success: false, message: "server error" });
+//   }
+// });
 
 //// get api/posts
 router.get("/", async (req, res) => {

@@ -4,22 +4,23 @@ const Schema = mongoose.Schema;
 const PcSchema = new Schema({
   imgs: {
     type: Array,
+    required: true,
   },
   title: {
     type: String,
-    default: "",
+    required: true,
   },
   processor: {
     type: String,
-    default: "",
+    required: true,
   },
   ram: {
     type: String,
-    default: "",
+    required: true,
   },
   graphicCard: {
     type: String,
-    default: "",
+    required: true,
   },
   operatingSystem: {
     type: String,
@@ -27,11 +28,11 @@ const PcSchema = new Schema({
   },
   price: {
     type: String,
-    default: "",
+    required: true,
   },
   ssd: {
     type: String,
-    default: "",
+    required: true,
   },
   review: {
     type: Array,
@@ -39,7 +40,7 @@ const PcSchema = new Schema({
   },
   genre: {
     type: String,
-    require: true,
+    required: true,
   },
   createdAt: {
     type: Date,

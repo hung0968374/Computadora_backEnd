@@ -4,35 +4,36 @@ const Schema = mongoose.Schema;
 const PostSchema = new Schema({
   imgs: {
     type: Array,
+    required: true,
   },
   title: {
     type: String,
-    default: "",
+    required: true,
   },
   processor: {
     type: String,
-    default: "",
+    required: true,
   },
 
   screen: {
     type: String,
-    default: "",
+    required: true,
   },
   ram: {
     type: String,
-    default: "",
+    required: true,
   },
   graphicCard: {
     type: String,
-    default: "",
+    required: true,
   },
   pin: {
     type: String,
-    default: "",
+    required: true,
   },
   weight: {
     type: String,
-    default: "",
+    required: true,
   },
   operatingSystem: {
     type: String,
@@ -40,12 +41,12 @@ const PostSchema = new Schema({
   },
   price: {
     type: String,
-    default: "",
+    required: true,
   },
 
   review: {
     type: Array,
-    default: [],
+    required: true,
   },
   genre: {
     type: String,

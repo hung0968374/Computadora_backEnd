@@ -10,6 +10,7 @@ const chatRouter = require("./routes/chat");
 const commentRouter = require("./routes/comment");
 const userRouter = require("./routes/user");
 const pcRouter = require("./routes/Pc");
+const blogRouter = require("./routes/blog");
 var bodyParser = require("body-parser");
 
 const connectDB = async () => {
@@ -87,6 +88,7 @@ app.use("/api/invoices", invoiceRouter);
 app.use("/api/chat", chatRouter);
 app.use("/api/comment", commentRouter);
 app.use("/api/user", userRouter);
+app.use("/api/blog", blogRouter);
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => console.log(`server started on port ${PORT}`));
