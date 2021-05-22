@@ -43,6 +43,31 @@ router.get("/random/ramdomBlog", async (req, res) => {
     res.status(500).json({ success: false, message: "server error" });
   }
 });
+router.get("/random/getSevenDistinctRandomBlog", async (req, res) => {
+  try {
+    let sevenRamdomBlog = [];
+    let selectedIndex = [];
+    for (var i = 0; i < 7; i++) {
+      let indexChoosed = false;
+      while (!indexChoosed) {
+        const rand = Math.floor(Math.random() * 29);
+        if (!selectedIndex.includes(rand)) {
+          selectedIndex.push(rand);
+          const blog = await Blog.findOne(
+            {},
+            { blogTitle: 1, blogMainImg: 1, createdAt: 1 }
+          ).skip(rand);
+          sevenRamdomBlog.push(blog);
+          indexChoosed = true;
+        }
+      }
+    }
+    res.json({ success: true, sevenRamdomBlog });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "server error" });
+  }
+});
 router.get("/filter", async (req, res) => {
   const page = req.query.page;
   const limit = req.query.amountPerPage;
