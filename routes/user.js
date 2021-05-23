@@ -112,7 +112,7 @@ router.post("/recoverPw", async (req, res) => {
       from: "ecommerceApp@gmail.com",
       to: userEmail,
       subject: "Click vào link này để lấy lại tài khoản của bạn",
-      html: `<a href="https://computadora.netlify.app/activateRecoveringPw/${token}">CLICK TO RECOVER YOUR ACCOUNT</a>`,
+      html: `<a href="https://computadora.netlify.app/activateRecoveringPw/${token}">Bấm để lấy lại tài khoản của bạn.</a>`,
     };
 
     transporter.sendMail(mailOptions, function (error, info) {
@@ -121,7 +121,7 @@ router.post("/recoverPw", async (req, res) => {
       } else {
         res.json({
           message:
-            "Chúng tôi đã gửi đường link xác thực lấy lại tài khoản vào gmail của bạn (check mục thư rác), hãy bấm vào đường link đó để lấy lại tài khoản bạn đã đăng kí.",
+            "Chúng tôi đã gửi đường link xác thực lấy lại tài khoản vào gmail của bạn (xem mục thư rác), hãy bấm vào đường link đó để lấy lại tài khoản bạn đã đăng kí.",
           token,
         });
       }

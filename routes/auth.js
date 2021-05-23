@@ -59,7 +59,7 @@ router.post("/register/verifyAccount", async (req, res) => {
       from: "ecommerceApp@gmail.com",
       to: email,
       subject: "Click vào link này để kích hoạt tài khoản của bạn",
-      html: `<a href="https://computadora.netlify.app/activateAccount/${accessToken}">CLICK TO ACTIVATE YOUR ACCOUNT</a>`,
+      html: `<a href="https://computadora.netlify.app/activateAccount/${accessToken}">Bấm để kích hoạt tài khoản bạn đã đăng kí.</a>`,
     };
 
     transporter.sendMail(mailOptions, function (error, info) {
@@ -68,7 +68,7 @@ router.post("/register/verifyAccount", async (req, res) => {
       } else {
         res.json({
           message:
-            "Chúng tôi đã gửi đường link xác thực đăng kí tài khoản vào gmail của bạn (check mục thư rác), hãy bấm vào đường link đó để kích hoạt tài khoản bạn đã đăng kí.",
+            "Chúng tôi đã gửi đường link xác thực đăng kí tài khoản vào gmail của bạn (xem mục thư rác), hãy bấm vào đường link đó để kích hoạt tài khoản bạn đã đăng kí.",
           accessToken,
         });
       }
