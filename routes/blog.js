@@ -26,7 +26,7 @@ const Blog = require("../models/Blog");
 //// get api/posts
 router.get("/", async (req, res) => {
   try {
-    const blogs = await Blog.find({});
+    const blogs = await Blog.find({}).sort({ createdAt: -1 });
     res.json({ success: true, blogs });
   } catch (error) {
     console.log(error);
@@ -34,7 +34,7 @@ router.get("/", async (req, res) => {
   }
 });
 router.get("/random/ramdomBlog", async (req, res) => {
-  const rand = Math.floor(Math.random() * 29);
+  const rand = Math.floor(Math.random() * 57);
   try {
     const blog = await Blog.findOne({}).skip(rand);
     res.json({ success: true, blog });
@@ -50,12 +50,12 @@ router.get("/random/getSevenDistinctRandomBlog", async (req, res) => {
     for (var i = 0; i < 7; i++) {
       let indexChoosed = false;
       while (!indexChoosed) {
-        const rand = Math.floor(Math.random() * 29);
+        const rand = Math.floor(Math.random() * 57);
         if (!selectedIndex.includes(rand)) {
           selectedIndex.push(rand);
           const blog = await Blog.findOne(
             {},
-            { blogTitle: 1, blogMainImg: 1, createdAt: 1 }
+            { blogTitle: 1, blogMainImg: 1, blogBody: 1, createdAt: 1 }
           ).skip(rand);
           sevenRamdomBlog.push(blog);
           indexChoosed = true;
@@ -74,7 +74,8 @@ router.get("/filter", async (req, res) => {
   try {
     const blogs = await Blog.find({})
       .limit(limit * 1)
-      .skip((page - 1) * limit);
+      .skip((page - 1) * limit)
+      .sort({ createdAt: -1 });
     res.json({ success: true, blogs });
   } catch (error) {
     console.log(error);
@@ -86,7 +87,7 @@ router.get("/search/searchItemsPool", async (req, res) => {
     const searchResultsPool = await Blog.find(
       {},
       { blogTitle: 1, blogMainImg: 1, createdAt: 1 }
-    );
+    ).sort({ createdAt: -1 });
     res.json({ success: true, searchResultsPool });
   } catch (error) {
     console.log(error);
