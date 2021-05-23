@@ -79,7 +79,7 @@ app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 
 app.get("/", (req, res) => {
-  res.send("Welcome to computadora-api");
+  res.send("Welcome to computadora-api (changed)");
 });
 app.use("/api/auth", authRouter);
 app.use("/api/posts", postRouter);

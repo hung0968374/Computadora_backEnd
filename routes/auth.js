@@ -59,7 +59,7 @@ router.post("/register/verifyAccount", async (req, res) => {
       from: "ecommerceApp@gmail.com",
       to: email,
       subject: "Click vào link này để kích hoạt tài khoản của bạn",
-      html: `<a href="https://localhost:3000/activateAccount/${accessToken}">CLICK TO ACTIVATE YOUR ACCOUNT</a>`,
+      html: `<a href="https://computadora.netlify.app/activateAccount/${accessToken}">CLICK TO ACTIVATE YOUR ACCOUNT</a>`,
     };
 
     transporter.sendMail(mailOptions, function (error, info) {
