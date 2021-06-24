@@ -11,6 +11,7 @@ const commentRouter = require("./routes/comment");
 const userRouter = require("./routes/user");
 const pcRouter = require("./routes/Pc");
 const blogRouter = require("./routes/blog");
+const laptopRouter = require("./routes/laptop");
 var bodyParser = require("body-parser");
 
 const connectDB = async () => {
@@ -74,6 +75,7 @@ db.once("open", () => {
 
 const app = express();
 app.use(cors());
+app.use("/images", express.static("images"));
 // app.use(express.json());
 app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
@@ -89,6 +91,7 @@ app.use("/api/chat", chatRouter);
 app.use("/api/comment", commentRouter);
 app.use("/api/user", userRouter);
 app.use("/api/blog", blogRouter);
+app.use("/api/laptops", laptopRouter);
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => console.log(`server started on port ${PORT}`));
