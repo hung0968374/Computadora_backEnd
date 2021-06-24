@@ -46,7 +46,7 @@ const LaptopSchema = new Schema({
 
   review: {
     type: Array,
-    required: true,
+    default: ["Laptop xin vl", "asdasds"],
   },
   genre: {
     type: String,

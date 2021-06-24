@@ -75,6 +75,7 @@ db.once("open", () => {
 
 const app = express();
 app.use(cors());
+app.use("/images", express.static("images"));
 // app.use(express.json());
 app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
