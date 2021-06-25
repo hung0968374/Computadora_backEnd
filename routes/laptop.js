@@ -1,25 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const Laptop = require("../models/Laptop");
-const multer = require("multer");
-const verifyToken = require("../middleware/auth");
-const fs = require("fs");
-const fetch = require("node-fetch");
-
-//////////middleware
-
-const fileStorageEngine = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./images");
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now();
-    cb(null, uniqueSuffix + "-" + file.originalname);
-  },
-});
-const upload = multer({ storage: fileStorageEngine });
-
-//////////middleware
+const upload = require("../middleware/uploadFileUsingMulter");
+const storeFileToLocalDisk = require("../middleware/convertImgUrlToLocalImg");
 
 router.get("/", async (req, res) => {
   try {
@@ -76,18 +59,52 @@ router.post("/mulFile", upload.array("images", 10), async (req, res) => {
   }
 });
 
-router.post("/convertUrlToLocalImg", async (req, res) => {
-  const url =
-    "https://lumen.thinkpro.vn//backend/uploads/product/color_images/2021/6/16/xps9700-1.jpg";
-  const response = await fetch(url);
-  const splitedUrl = url.split("/");
-  console.log(splitedUrl[splitedUrl.length - 1]);
-  const processedUrl = `${Date.now()}-${splitedUrl[splitedUrl.length - 1]}`;
-  const buffer = await response.buffer();
-  fs.writeFile(`./images/${processedUrl}`, buffer, () => {
-    console.log(`./images/${processedUrl}`);
-  });
-  res.json("successful");
-});
+router.post(
+  "/pushCrawledDataToDatabase",
+  storeFileToLocalDisk,
+  async (req, res) => {
+    console.log("req urls from middleware", req.imgsUrl);
+    const imgs = req.imgsUrl;
+    const {
+      title,
+      processor,
+      screen,
+      ram,
+      graphicCard,
+      pin,
+      weight,
+      operatingSystem,
+      price,
+      review,
+      genre,
+    } = req.body;
+    if (!imgs || !title) {
+      res
+        .status(400)
+        .json({ status: "failed", message: "Title va anh khong duoc trong" });
+    }
+    try {
+      const newLaptop = new Laptop({
+        imgs,
+        title,
+        processor,
+        screen,
+        ram,
+        graphicCard,
+        pin,
+        weight,
+        operatingSystem,
+        price,
+        review,
+        genre,
+      });
+      await newLaptop.save();
+      res.json({ status: "successful", newLaptop });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ success: false, message: "server error" });
+    }
+  }
+);
 
 module.exports = router;
