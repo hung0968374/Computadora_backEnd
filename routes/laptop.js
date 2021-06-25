@@ -3,16 +3,10 @@ const router = express.Router();
 const Laptop = require("../models/Laptop");
 const multer = require("multer");
 const verifyToken = require("../middleware/auth");
+const fs = require("fs");
+const fetch = require("node-fetch");
 
-router.get("/", async (req, res) => {
-  try {
-    const laptops = await Laptop.find({}).sort({ createdAt: -1 });
-    res.json({ success: true, laptops });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ success: false, message: "server error" });
-  }
-});
+//////////middleware
 
 const fileStorageEngine = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -24,6 +18,18 @@ const fileStorageEngine = multer.diskStorage({
   },
 });
 const upload = multer({ storage: fileStorageEngine });
+
+//////////middleware
+
+router.get("/", async (req, res) => {
+  try {
+    const laptops = await Laptop.find({}).sort({ createdAt: -1 });
+    res.json({ success: true, laptops });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "server error" });
+  }
+});
 
 router.post("/singleFile", upload.single("image"), (req, res) => {
   console.log(req.file);
@@ -68,6 +74,20 @@ router.post("/mulFile", upload.array("images", 10), async (req, res) => {
     console.log(error);
     res.status(500).json({ error: "server error" });
   }
+});
+
+router.post("/convertUrlToLocalImg", async (req, res) => {
+  const url =
+    "https://lumen.thinkpro.vn//backend/uploads/product/color_images/2021/6/16/xps9700-1.jpg";
+  const response = await fetch(url);
+  const splitedUrl = url.split("/");
+  console.log(splitedUrl[splitedUrl.length - 1]);
+  const processedUrl = `${Date.now()}-${splitedUrl[splitedUrl.length - 1]}`;
+  const buffer = await response.buffer();
+  fs.writeFile(`./images/${processedUrl}`, buffer, () => {
+    console.log(`./images/${processedUrl}`);
+  });
+  res.json("successful");
 });
 
 module.exports = router;
