@@ -33,7 +33,7 @@ const LaptopSchema = new Schema({
   },
   weight: {
     type: String,
-    required: true,
+    default: "2kg",
   },
   operatingSystem: {
     type: String,
@@ -50,7 +50,7 @@ const LaptopSchema = new Schema({
   },
   genre: {
     type: String,
-    require: true,
+    default: "laptop",
   },
 });
 

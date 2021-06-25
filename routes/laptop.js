@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const Laptop = require("../models/Laptop");
-const multer = require("multer");
-const verifyToken = require("../middleware/auth");
+const upload = require("../middleware/uploadFileUsingMulter");
+const storeFileToLocalDisk = require("../middleware/convertImgUrlToLocalImg");
 
 router.get("/", async (req, res) => {
   try {
@@ -13,17 +13,6 @@ router.get("/", async (req, res) => {
     res.status(500).json({ success: false, message: "server error" });
   }
 });
-
-const fileStorageEngine = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./images");
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now();
-    cb(null, uniqueSuffix + "-" + file.originalname);
-  },
-});
-const upload = multer({ storage: fileStorageEngine });
 
 router.post("/singleFile", upload.single("image"), (req, res) => {
   console.log(req.file);
@@ -69,5 +58,53 @@ router.post("/mulFile", upload.array("images", 10), async (req, res) => {
     res.status(500).json({ error: "server error" });
   }
 });
+
+router.post(
+  "/pushCrawledDataToDatabase",
+  storeFileToLocalDisk,
+  async (req, res) => {
+    console.log("req urls from middleware", req.imgsUrl);
+    const imgs = req.imgsUrl;
+    const {
+      title,
+      processor,
+      screen,
+      ram,
+      graphicCard,
+      pin,
+      weight,
+      operatingSystem,
+      price,
+      review,
+      genre,
+    } = req.body;
+    if (!imgs || !title) {
+      res
+        .status(400)
+        .json({ status: "failed", message: "Title va anh khong duoc trong" });
+    }
+    try {
+      const newLaptop = new Laptop({
+        imgs,
+        title,
+        processor,
+        screen,
+        ram,
+        graphicCard,
+        pin,
+        weight,
+        operatingSystem,
+        price,
+        review,
+        genre,
+      });
+      await newLaptop.save();
+      res.json({ status: "successful", newLaptop });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ success: false, message: "server error" });
+    }
+  }
+);
 
 module.exports = router;
